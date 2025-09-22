@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,21 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
+          const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        to_name: 'Aravinth Raj',
+        message: formData.message,
+        reply_to: formData.email
+      };
+
+    emailjs.send('service_nv3lurh', 'template_bdjdmpk',   templateParams, 'gvrvwGp3JTXoigsbo')
+      .then((result) => {
+          console.log('Email successfully sent!', result.text);
+          setFormData({ name: '', email: '', message: '' }); // Clear form after submission
+      }, (error) => {
+          console.log('Failed to send email. Error: ', error.text);
+      });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
